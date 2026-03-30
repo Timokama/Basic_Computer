@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STUDY_TITLE - Basic Computer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/content.css">
+</head>
+<body>
+    <!-- Background -->
+    <div class="hero-bg">
+        <div class="grid-pattern"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">💻</div>
+            Basic Computer
+        </div>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/content" class="active">Content</a>
+            <a href="/payment">Subscribe</a>
+            <a href="/profile">Profile</a>
+            <a href="/login" class="btn-login">Login</a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="content-page">
+        <!-- Header -->
+        <div class="content-header">
+            <div class="content-header-inner">
+                <h1>STUDY_TITLE</h1>
+                <p>STUDY_SUBTITLE</p>
+            </div>
+        </div>
+        
+        <div class="content-layout">
+            <!-- Sidebar - Category Filter -->
+            <aside class="category-sidebar">
+                <div class="sidebar-header">
+                    <h3>📂 Categories</h3>
+                </div>
+                <div class="category-list">
+                    <a href="/content?type=CONTENT_TYPE" class="category-item CAT_ALL">
+                        <span class="cat-icon">🌐</span>
+                        <span class="cat-name">All Categories</span>
+                    </a>
+                    <div class="category-group">
+                        <div class="category-group-label">Office Applications</div>
+                        <a href="/content?type=CONTENT_TYPE&category=MS_WORD" class="category-item CAT_MS_WORD">
+                            <span class="cat-icon">📝</span>
+                            <span class="cat-name">MS Word</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=MS_EXCEL" class="category-item CAT_MS_EXCEL">
+                            <span class="cat-icon">📊</span>
+                            <span class="cat-name">MS Excel</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=MS_ACCESS" class="category-item CAT_MS_ACCESS">
+                            <span class="cat-icon">🗃️</span>
+                            <span class="cat-name">MS Access</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=MS_POWERPOINT" class="category-item CAT_MS_POWERPOINT">
+                            <span class="cat-icon">📽️</span>
+                            <span class="cat-name">MS PowerPoint</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=MS_PUBLISHER" class="category-item CAT_MS_PUBLISHER">
+                            <span class="cat-icon">📰</span>
+                            <span class="cat-name">MS Publisher</span>
+                        </a>
+                    </div>
+                    <div class="category-group">
+                        <div class="category-group-label">Internet & Communication</div>
+                        <a href="/content?type=CONTENT_TYPE&category=INTERNET_EMAIL" class="category-item CAT_INTERNET_EMAIL">
+                            <span class="cat-icon">🌐</span>
+                            <span class="cat-name">Internet & Email</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=EMERGING_TRENDS" class="category-item CAT_EMERGING_TRENDS">
+                            <span class="cat-icon">🚀</span>
+                            <span class="cat-name">Emerging Trends</span>
+                        </a>
+                    </div>
+                    <div class="category-group">
+                        <div class="category-group-label">Computer Science</div>
+                        <a href="/content?type=CONTENT_TYPE&category=PROGRAMMING" class="category-item CAT_PROGRAMMING">
+                            <span class="cat-icon">💻</span>
+                            <span class="cat-name">Programming</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=DATA_STRUCTURES" class="category-item CAT_DATA_STRUCTURES">
+                            <span class="cat-icon">🌳</span>
+                            <span class="cat-name">Data Structures</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=ALGORITHMS" class="category-item CAT_ALGORITHMS">
+                            <span class="cat-icon">⚡</span>
+                            <span class="cat-name">Algorithms</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=DATABASES" class="category-item CAT_DATABASES">
+                            <span class="cat-icon">🗄️</span>
+                            <span class="cat-name">Databases</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=WEB_DEVELOPMENT" class="category-item CAT_WEB_DEVELOPMENT">
+                            <span class="cat-icon">🌍</span>
+                            <span class="cat-name">Web Development</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=OPERATING_SYSTEMS" class="category-item CAT_OPERATING_SYSTEMS">
+                            <span class="cat-icon">⚙️</span>
+                            <span class="cat-name">Operating Systems</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=COMPUTER_NETWORKS" class="category-item CAT_COMPUTER_NETWORKS">
+                            <span class="cat-icon">🔗</span>
+                            <span class="cat-name">Computer Networks</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=SOFTWARE_ENGINEERING" class="category-item CAT_SOFTWARE_ENGINEERING">
+                            <span class="cat-icon">🛠️</span>
+                            <span class="cat-name">Software Engineering</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=ARTIFICIAL_INTELLIGENCE" class="category-item CAT_ARTIFICIAL_INTELLIGENCE">
+                            <span class="cat-icon">🤖</span>
+                            <span class="cat-name">AI</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=COMPUTER_ARCHITECTURE" class="category-item CAT_COMPUTER_ARCHITECTURE">
+                            <span class="cat-icon">🔧</span>
+                            <span class="cat-name">Computer Architecture</span>
+                        </a>
+                        <a href="/content?type=CONTENT_TYPE&category=MATHEMATICS" class="category-item CAT_MATHEMATICS">
+                            <span class="cat-icon">📐</span>
+                            <span class="cat-name">Mathematics</span>
+                        </a>
+                    </div>
+                </div>
+            </aside>
+            
+            <!-- Main Content Area -->
+            <main class="content-main">
+                <!-- Search -->
+                <form method="get" action="/content" class="search-container">
+                    <input type="hidden" name="category" value="SEARCH_CAT">
+                    <input type="hidden" name="type" value="CONTENT_TYPE">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" name="search" class="search-input" placeholder="Search study materials..." value="SEARCH_VALUE">
+                    </div>
+                    <button type="submit" class="search-btn">Search</button>
+                </form>
+                
+                <!-- Active Filters -->
+                ACTIVE_FILTERS_HTML
+                
+                <!-- Type Tabs -->
+                <div class="type-tabs">
+                    <a href="/content?category=SEARCH_CAT" class="type-tab TAB_ALL">📚 All</a>
+                    <a href="/content?type=NOTE&category=SEARCH_CAT" class="type-tab TAB_NOTES">📝 Notes</a>
+                    <a href="/content?type=SAMPLE_QUESTION&category=SEARCH_CAT" class="type-tab TAB_QUESTIONS">❓ Questions</a>
+                    <a href="/content?type=EXAM&category=SEARCH_CAT" class="type-tab TAB_EXAMS">📋 Exams</a>
+                    <a href="/content?type=VIDEO&category=SEARCH_CAT" class="type-tab TAB_VIDEOS">🎥 Videos</a>
+                </div>
+                
+                <!-- Results Count -->
+                RESULTS_COUNT_HTML
+                
+                <!-- Content Grid -->
+                CONTENT_HTML
+                
+                <!-- No Content Message -->
+                NO_CONTENT_HTML
+                
+                <!-- Pagination -->
+                PAGINATION_HTML
+            </main>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <p>© 2024 Basic Computer - Your Learning Platform</p>
+    </footer>
+</body>
+</html>

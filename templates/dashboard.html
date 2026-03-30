@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Basic Computer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+    <!-- Background -->
+    <div class="hero-bg">
+        <div class="grid-pattern"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <div class="logo-icon">💻</div>
+            Basic Computer
+        </div>
+        <div class="nav-links">
+            <a href="/dashboard" class="active">Dashboard</a>
+            <a href="/content">Content</a>
+            <a href="/payment">Subscribe</a>
+            <a href="/profile">Profile</a>
+            <div class="user-menu">
+                <div class="user-avatar">{{USER_INITIAL}}</div>
+                <span>{{USER_NAME}}</span>
+            </div>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <div class="welcome-content">
+                <h1>Welcome back, {{USER_NAME}}!</h1>
+                <p>Your Computer Science Learning Dashboard - Access all study materials, notes, videos, and exams.</p>
+                <div class="welcome-actions">
+                    <a href="/content?type=NOTE" class="quick-action-btn primary">📚 Open Study Notes</a>
+                </div>
+            </div>
+            <div class="subscription-badge-header">
+                {{SUBSCRIPTION_BADGE}}
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-content">
+                    <span class="stat-number">120+</span>
+                    <span class="stat-label">Study Notes</span>
+                </div>
+                <div class="stat-bg-icon">📚</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❓</div>
+                <div class="stat-content">
+                    <span class="stat-number">120+</span>
+                    <span class="stat-label">Practice Questions</span>
+                </div>
+                <div class="stat-bg-icon">❓</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📝</div>
+                <div class="stat-content">
+                    <span class="stat-number">24+</span>
+                    <span class="stat-label">Exams</span>
+                </div>
+                <div class="stat-bg-icon">📝</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎥</div>
+                <div class="stat-content">
+                    <span class="stat-number">10+</span>
+                    <span class="stat-label">Videos</span>
+                </div>
+                <div class="stat-bg-icon">🎥</div>
+            </div>
+        </div>
+        
+        <!-- My Projects Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">🚀 My Projects</h2>
+                <a href="#" class="view-all-btn">View All →</a>
+            </div>
+            <div class="projects-grid" id="projectsGrid">
+                <!-- Projects loaded dynamically from API -->
+                <div class="project-card add-project" onclick="openAddProjectModal()">
+                    <div class="add-project-content">
+                        <span class="add-icon">➕</span>
+                        <h3>Add New Project</h3>
+                        <p>Create and track your projects</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Study Materials -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">📖 Study Materials</h2>
+                <a href="/content" class="view-all-btn">View All →</a>
+            </div>
+            <div class="materials-grid">
+                <a href="/content?type=NOTE" class="material-card">
+                    <div class="material-icon">📚</div>
+                    <div class="material-content">
+                        <h3>Study Notes</h3>
+                        <p>Comprehensive CS notes</p>
+                    </div>
+                    <span class="material-count">120+</span>
+                </a>
+                <a href="/content?type=SAMPLE_QUESTION" class="material-card">
+                    <div class="material-icon">❓</div>
+                    <div class="material-content">
+                        <h3>Practice Questions</h3>
+                        <p>Test your knowledge</p>
+                    </div>
+                    <span class="material-count">120+</span>
+                </a>
+                <a href="/content?type=EXAM" class="material-card">
+                    <div class="material-icon">📝</div>
+                    <div class="material-content">
+                        <h3>Exams & Answers</h3>
+                        <p>Practice exams</p>
+                    </div>
+                    <span class="material-count">24+</span>
+                </a>
+                <a href="/content?type=VIDEO" class="material-card">
+                    <div class="material-icon">🎥</div>
+                    <div class="material-content">
+                        <h3>Video Tutorials</h3>
+                        <p>Learn visually</p>
+                    </div>
+                    <span class="material-count">10+</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Subscribe Banner -->
+        <div class="subscribe-banner">
+            <div class="subscribe-content">
+                <div class="subscribe-text">
+                    <h2>🚀 Unlock Premium Content</h2>
+                    <p>Subscribe to access all content with M-Pesa, PayPal, Stripe, or Bank Transfer</p>
+                </div>
+                <a href="/payment" class="subscribe-btn">Subscribe Now</a>
+            </div>
+            <div class="subscribe-decoration">
+                <span>🎓</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project View Modal -->
+    <div class="modal-overlay" id="projectModal" onclick="closeModal(event)">
+        <div class="modal-content project-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeProjectModal()">&times;</button>
+            <div class="modal-cover" id="modalCover">
+                <span class="modal-icon" id="modalIcon"></span>
+            </div>
+            <div class="modal-body">
+                <span class="modal-status" id="modalStatus"></span>
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <p class="modal-description" id="modalDescription"></p>
+                <div class="modal-progress">
+                    <div class="modal-progress-label">
+                        <span>Progress</span>
+                        <span id="modalProgressText"></span>
+                    </div>
+                    <div class="modal-progress-bar">
+                        <div class="modal-progress-fill" id="modalProgressFill"></div>
+                    </div>
+                </div>
+                <div class="modal-tech" id="modalTech"></div>
+                <div class="modal-actions">
+                    <a href="#" class="modal-btn modal-btn-primary" id="modalLinkBtn">View Project</a>
+                    <button class="modal-btn modal-btn-secondary" onclick="closeProjectModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add New Project Modal -->
+    <div class="modal-overlay" id="addProjectModal" onclick="closeAddProjectModal(event)">
+        <div class="modal-content add-project-modal" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeAddProjectModal()">&times;</button>
+            <div class="modal-header">
+                <h2>➕ Add New Project</h2>
+                <p>Create and track your development projects</p>
+            </div>
+            <form id="addProjectForm" onsubmit="saveProject(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Project Title</label>
+                        <input type="text" name="projectTitle" required placeholder="Enter project title">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea name="projectDescription" rows="3" placeholder="Describe your project"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Project URL (GitHub/Live)</label>
+                        <input type="url" name="projectUrl" placeholder="https://github.com/...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select name="projectStatus">
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Planning">Planning</option>
+                            <option value="On Hold">On Hold</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Progress (%)</label>
+                        <input type="number" name="projectProgress" min="0" max="100" value="0" placeholder="0-100">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Technologies (comma separated)</label>
+                        <input type="text" name="projectTech" placeholder="HTML, CSS, JavaScript, React">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cover Color</label>
+                        <div class="color-options">
+                            <input type="radio" name="coverColor" id="color1" value="linear-gradient(135deg, #667eea 0%, #764ba2 100%)" checked>
+                            <label for="color1" class="color-option" style="background: linear-gradient(135deg, #667eea, #764ba2);"></label>
+                            <input type="radio" name="coverColor" id="color2" value="linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">
+                            <label for="color2" class="color-option" style="background: linear-gradient(135deg, #f093fb, #f5576c);"></label>
+                            <input type="radio" name="coverColor" id="color3" value="linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">
+                            <label for="color3" class="color-option" style="background: linear-gradient(135deg, #4facfe, #00f2fe);"></label>
+                            <input type="radio" name="coverColor" id="color4" value="linear-gradient(135deg, #fa709a 0%, #fee140 100%)">
+                            <label for="color4" class="color-option" style="background: linear-gradient(135deg, #fa709a, #fee140);"></label>
+                            <input type="radio" name="coverColor" id="color5" value="linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)">
+                            <label for="color5" class="color-option" style="background: linear-gradient(135deg, #a8edea, #fed6e3);"></label>
+                            <input type="radio" name="coverColor" id="color6" value="linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)">
+                            <label for="color6" class="color-option" style="background: linear-gradient(135deg, #ff9a9e, #fecfef);"></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="modal-btn modal-btn-primary">Save Project</button>
+                    <button type="button" class="modal-btn modal-btn-secondary" onclick="closeAddProjectModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal JavaScript -->
+    <script>
+        let loadedProjects = [];
+
+        function getStatusClass(status) {
+            if (status === 'Completed') return 'completed';
+            if (status === 'In Progress') return 'in-progress';
+            if (status === 'Planning') return 'planning';
+            if (status === 'On Hold') return 'on-hold';
+            return 'in-progress';
+        }
+
+        function renderProjects(projects) {
+            const grid = document.getElementById('projectsGrid');
+            let html = '';
+            
+            projects.forEach(project => {
+                const techs = project.technologies ? project.technologies.split(',').map(t => t.trim()) : [];
+                html += `
+                <div class="project-card" onclick="openProjectModal(${project.id})">
+                    <div class="project-cover" style="background: ${project.cover_color || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'};">
+                        <span class="project-icon">${project.icon || '💻'}</span>
+                    </div>
+                    <div class="project-info">
+                        <span class="project-status ${getStatusClass(project.status)}">${project.status}</span>
+                        <h3>${project.title}</h3>
+                        <p>${project.description ? project.description.substring(0, 60) + (project.description.length > 60 ? '...' : '') : ''}</p>
+                        <div class="project-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${project.progress}%"></div>
+                            </div>
+                            <span class="progress-text">${project.progress}%</span>
+                        </div>
+                        <div class="project-tech">
+                            ${techs.map(t => '<span class="tech-tag">' + t + '</span>').join('')}
+                        </div>
+                    </div>
+                </div>`;
+            });
+            
+            html += `
+                <div class="project-card add-project" onclick="openAddProjectModal()">
+                    <div class="add-project-content">
+                        <span class="add-icon">➕</span>
+                        <h3>Add New Project</h3>
+                        <p>Create and track your projects</p>
+                    </div>
+                </div>`;
+            
+            grid.innerHTML = html;
+        }
+
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                loadedProjects = await response.json();
+                renderProjects(loadedProjects);
+            } catch (e) {
+                console.error('Failed to load projects:', e);
+            }
+        }
+
+        function openProjectModal(id) {
+            const project = loadedProjects.find(p => p.id === id);
+            if (!project) return;
+            
+            const modal = document.getElementById('projectModal');
+            const techs = project.technologies ? project.technologies.split(',').map(t => t.trim()) : [];
+            
+            document.getElementById('modalIcon').textContent = project.icon || '💻';
+            document.getElementById('modalCover').style.background = project.cover_color || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            document.getElementById('modalTitle').textContent = project.title;
+            document.getElementById('modalDescription').textContent = project.description || '';
+            document.getElementById('modalStatus').textContent = project.status;
+            document.getElementById('modalStatus').className = 'modal-status ' + getStatusClass(project.status);
+            document.getElementById('modalProgressText').textContent = project.progress + '%';
+            document.getElementById('modalProgressFill').style.width = project.progress + '%';
+            document.getElementById('modalLinkBtn').href = project.project_url || '#';
+            
+            const techContainer = document.getElementById('modalTech');
+            techContainer.innerHTML = techs.map(t => '<span class="modal-tech-tag">' + t + '</span>').join('');
+            
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProjectModal() {
+            const modal = document.getElementById('projectModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function openAddProjectModal() {
+            const modal = document.getElementById('addProjectModal');
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeAddProjectModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            const modal = document.getElementById('addProjectModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+            document.getElementById('addProjectForm').reset();
+        }
+
+        async function saveProject(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const title = formData.get('projectTitle');
+            const description = formData.get('projectDescription');
+            const url = formData.get('projectUrl');
+            const status = formData.get('projectStatus');
+            const progress = formData.get('projectProgress');
+            const tech = formData.get('projectTech');
+            const coverColor = formData.get('coverColor');
+            
+            try {
+                const response = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: title,
+                        description: description || '',
+                        project_url: url || '',
+                        status: status,
+                        progress: parseInt(progress) || 0,
+                        technologies: tech || '',
+                        cover_color: coverColor,
+                        icon: '💻'
+                    })
+                });
+                
+                if (response.ok) {
+                    closeAddProjectModal();
+                    loadProjects();
+                } else {
+                    alert('Failed to save project');
+                }
+            } catch (e) {
+                console.error('Error saving project:', e);
+                alert('Failed to save project');
+            }
+        }
+
+        function closeModal(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                closeProjectModal();
+            }
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeProjectModal();
+                closeAddProjectModal();
+            }
+        });
+
+        // Load projects on page load
+        loadProjects();
+    </script>
+</body>
+</html>

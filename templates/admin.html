@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Basic Computer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/content.css">
+    <style>
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-overlay .modal-content {
+            background: linear-gradient(180deg, rgba(20, 20, 35, 0.98), rgba(10, 10, 20, 0.98));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.2rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            transform: rotate(90deg);
+        }
+        .modal-body {
+            padding: 25px 30px;
+        }
+        .modal-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(245, 158, 11, 0.5);
+            background: rgba(255, 255, 255, 0.06);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+        select.form-input {
+            cursor: pointer;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 10px;
+        }
+        .modal-btn {
+            padding: 12px 26px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+        .modal-btn-primary {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+        }
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.4);
+        }
+        .modal-btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .modal-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .btn-add {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+        }
+        .btn-add:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+        .content-filters-bar {
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .content-search-form {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .content-search-form .search-wrapper {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .content-search-form .search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+        }
+        .content-search-form .search-input:focus {
+            outline: none;
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        }
+        .content-search-form .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1rem;
+        }
+        .filter-select {
+            padding: 12px 16px !important;
+            min-width: 160px;
+            background: rgba(255, 255, 255, 0.05) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 10px !important;
+            color: #fff !important;
+            font-family: 'Outfit', sans-serif !important;
+            font-size: 0.9rem !important;
+            cursor: pointer;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: rgba(245, 158, 11, 0.5) !important;
+        }
+        .filter-select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        .filter-select optgroup {
+            background: #1a1a2e;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
+        }
+        .search-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Outfit', sans-serif;
+        }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+        .clear-filters-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+        }
+        .clear-filters-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .active-filters {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+        .filter-label {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+        .filter-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 8px;
+            color: #f59e0b;
+            font-size: 0.85rem;
+        }
+        .remove-filter {
+            color: rgba(245, 158, 11, 0.7);
+            text-decoration: none;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .remove-filter:hover {
+            color: #f59e0b;
+        }
+        .clear-filters {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+            font-size: 0.85rem;
+            margin-left: 8px;
+        }
+        .clear-filters:hover {
+            color: #fff;
+        }
+        .results-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+        .results-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+        .results-text strong {
+            color: #f59e0b;
+        }
+        .results-category {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.85rem;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .page-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .page-btn:hover {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #f59e0b;
+        }
+        .page-btn.active {
+            background: linear-gradient(135deg, #f59e0b, #f97316);
+            border-color: transparent;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Background -->
+    <div class="hero-bg">
+        <div class="grid-pattern"></div>
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="admin-nav">
+        <div class="logo">
+            <div class="logo-icon">💻</div>
+            Basic Computer
+        </div>
+        <div class="nav-links">
+            <a href="/admin" class="active">Dashboard</a>
+            <a href="/dashboard">Student View</a>
+            <a href="/payment">Payments</a>
+            <span class="admin-badge">👑 Admin</span>
+            <a href="/logout">Logout</a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="admin-main">
+        <!-- Welcome -->
+        <div class="welcome-section">
+            <h1>👑 Admin Dashboard</h1>
+            <p>Welcome, {{USER_NAME}}! Manage users, content, and subscriptions.</p>
+        </div>
+        
+        <!-- Stats -->
+        <div class="admin-stats">
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon">👥</div>
+                <div class="admin-stat-content">
+                    <div class="admin-stat-number">{{TOTAL_USERS}}</div>
+                    <div class="admin-stat-label">Total Users</div>
+                </div>
+                <div class="admin-stat-bg">👥</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon">📚</div>
+                <div class="admin-stat-content">
+                    <div class="admin-stat-number">{{TOTAL_CONTENT}}</div>
+                    <div class="admin-stat-label">Total Content</div>
+                </div>
+                <div class="admin-stat-bg">📚</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon">💳</div>
+                <div class="admin-stat-content">
+                    <div class="admin-stat-number">{{TOTAL_SUBSCRIPTIONS}}</div>
+                    <div class="admin-stat-label">Subscriptions</div>
+                </div>
+                <div class="admin-stat-bg">💳</div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="admin-stat-icon">✅</div>
+                <div class="admin-stat-content">
+                    <div class="admin-stat-number">{{ACTIVE_USERS}}</div>
+                    <div class="admin-stat-label">Active Users</div>
+                </div>
+                <div class="admin-stat-bg">✅</div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h2 class="admin-section-title">⚡ Quick Actions</h2>
+            </div>
+            <div class="quick-actions-grid">
+                <div class="quick-action-card" onclick="openAddUserModal()">
+                    <div class="quick-action-icon">➕</div>
+                    <div class="quick-action-title">Add User</div>
+                    <div class="quick-action-desc">Create a new user account</div>
+                </div>
+                <div class="quick-action-card" onclick="openAddContentModal()">
+                    <div class="quick-action-icon">📝</div>
+                    <div class="quick-action-title">Add Content</div>
+                    <div class="quick-action-desc">Upload study materials</div>
+                </div>
+                <div class="quick-action-card" onclick="window.location.href='/payment'">
+                    <div class="quick-action-icon">💰</div>
+                    <div class="quick-action-title">View Payments</div>
+                    <div class="quick-action-desc">Check payment history</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Management -->
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h2 class="admin-section-title">👥 User Management</h2>
+                <a href="#" class="btn-add" onclick="openAddUserModal(); return false;">+ Add New User</a>
+            </div>
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Full Name</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{USERS_TABLE}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Content Management -->
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h2 class="admin-section-title">📚 Content Management</h2>
+                <a href="#" class="btn-add" onclick="openAddContentModal(); return false;">+ Add New Content</a>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Type</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{CONTENT_TABLE}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div class="modal-overlay" id="editUserModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+            <div class="modal-body">
+                <h2 class="modal-title">Edit User</h2>
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="editUserEmail" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="editUserFullName">
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="editUserRole">
+                            <option value="STUDENT">Student</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="editUserActive">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="modal-btn modal-btn-primary">Save Changes</button>
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Content Modal -->
+    <div class="modal-overlay" id="editContentModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeContentModal()">&times;</button>
+            <div class="modal-body">
+                <h2 class="modal-title">Edit Content</h2>
+                <form id="editContentForm">
+                    <input type="hidden" id="editContentId">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="editContentTitle">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="editContentType">
+                            <option value="NOTE">Study Note</option>
+                            <option value="SAMPLE_QUESTION">Practice Question</option>
+                            <option value="EXAM">Exam</option>
+                            <option value="VIDEO">Video</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <input type="text" id="editContentCategory">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="modal-btn modal-btn-primary">Save Changes</button>
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeContentModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal-overlay" id="addUserModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeAddUserModal()">&times;</button>
+            <div class="modal-body">
+                <h2 class="modal-title">Add New User</h2>
+                <form id="addUserForm">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="addUserFullName" class="form-input" placeholder="Enter full name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="addUserEmail" class="form-input" placeholder="Enter email address" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="tel" id="addUserPhone" class="form-input" placeholder="e.g., 254712345678">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="addUserPassword" class="form-input" placeholder="Enter password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Role</label>
+                        <select id="addUserRole" class="form-input">
+                            <option value="STUDENT">Student</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="modal-btn modal-btn-primary">Create User</button>
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeAddUserModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Content Modal -->
+    <div class="modal-overlay" id="addContentModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeAddContentModal()">&times;</button>
+            <div class="modal-body">
+                <h2 class="modal-title">Add New Content</h2>
+                <form id="addContentForm">
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" id="addContentTitle" class="form-input" placeholder="Enter content title" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="addContentDescription" class="form-input" placeholder="Enter description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="addContentType" class="form-input">
+                            <option value="NOTE">Study Note</option>
+                            <option value="SAMPLE_QUESTION">Practice Question</option>
+                            <option value="EXAM">Exam</option>
+                            <option value="VIDEO">Video</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <input type="text" id="addContentCategory" class="form-input" placeholder="e.g., PROGRAMMING, DATABASES">
+                    </div>
+                    <div class="form-group">
+                        <label>Content URL (for Videos)</label>
+                        <input type="url" id="addContentUrl" class="form-input" placeholder="https://...">
+                    </div>
+                    <div class="form-group">
+                        <label>Body</label>
+                        <textarea id="addContentBody" class="form-input" placeholder="Enter content body text" rows="5"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="modal-btn modal-btn-primary">Create Content</button>
+                        <button type="button" class="modal-btn modal-btn-secondary" onclick="closeAddContentModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Scripts -->
+    <script>
+        // User data storage
+        const userData = {};
+        const contentData = {};
+        
+        // Store user data from table
+        document.querySelectorAll('.user-row').forEach(row => {
+            const id = row.dataset.id;
+            userData[id] = {
+                email: row.dataset.email,
+                fullName: row.dataset.fullName,
+                role: row.dataset.role,
+                active: row.dataset.active
+            };
+        });
+        
+        // Store content data from table
+        document.querySelectorAll('.content-row').forEach(row => {
+            const id = row.dataset.id;
+            contentData[id] = {
+                title: row.dataset.title,
+                type: row.dataset.type,
+                category: row.dataset.category
+            };
+        });
+
+        function editUser(id) {
+            const user = userData[id];
+            if (user) {
+                document.getElementById('editUserId').value = id;
+                document.getElementById('editUserEmail').value = user.email;
+                document.getElementById('editUserFullName').value = user.fullName;
+                document.getElementById('editUserRole').value = user.role;
+                document.getElementById('editUserActive').value = user.active;
+                document.getElementById('editUserModal').classList.add('active');
+            }
+        }
+
+        function deleteUser(id) {
+            if (confirm('Are you sure you want to delete this user?')) {
+                fetch('/api/admin/users/' + id, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('User deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Failed to delete user. Please try again.');
+                    });
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editUserModal').classList.remove('active');
+        }
+
+        function editContent(id) {
+            const content = contentData[id];
+            if (content) {
+                document.getElementById('editContentId').value = id;
+                document.getElementById('editContentTitle').value = content.title;
+                document.getElementById('editContentType').value = content.type;
+                document.getElementById('editContentCategory').value = content.category;
+                document.getElementById('editContentModal').classList.add('active');
+            }
+        }
+
+        function deleteContent(id) {
+            if (confirm('Are you sure you want to delete this content?')) {
+                fetch('/api/admin/content/' + id, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Content deleted successfully!');
+                            location.reload();
+                        } else {
+                            alert('Error: ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        alert('Failed to delete content. Please try again.');
+                    });
+            }
+        }
+
+        function closeContentModal() {
+            document.getElementById('editContentModal').classList.remove('active');
+        }
+
+        function closeModal(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Add User Modal functions
+        function openAddUserModal() {
+            document.getElementById('addUserModal').classList.add('active');
+        }
+
+        function closeAddUserModal() {
+            document.getElementById('addUserModal').classList.remove('active');
+            document.getElementById('addUserForm').reset();
+        }
+
+        // Add Content Modal functions
+        function openAddContentModal() {
+            document.getElementById('addContentModal').classList.add('active');
+        }
+
+        function closeAddContentModal() {
+            document.getElementById('addContentModal').classList.remove('active');
+            document.getElementById('addContentForm').reset();
+        }
+
+        // Add User form submission
+        document.getElementById('addUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = {
+                fullName: document.getElementById('addUserFullName').value,
+                email: document.getElementById('addUserEmail').value,
+                phone: document.getElementById('addUserPhone').value,
+                password: document.getElementById('addUserPassword').value,
+                role: document.getElementById('addUserRole').value
+            };
+            
+            try {
+                const response = await fetch('/api/admin/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('User created successfully!');
+                    closeAddUserModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Failed to create user. Please try again.');
+            }
+        });
+
+        // Add Content form submission
+        document.getElementById('addContentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const data = {
+                title: document.getElementById('addContentTitle').value,
+                description: document.getElementById('addContentDescription').value,
+                type: document.getElementById('addContentType').value,
+                category: document.getElementById('addContentCategory').value,
+                contentUrl: document.getElementById('addContentUrl').value,
+                body: document.getElementById('addContentBody').value
+            };
+            
+            try {
+                const response = await fetch('/api/admin/content', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Content created successfully!');
+                    closeAddContentModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Failed to create content. Please try again.');
+            }
+        });
+
+        // Form submissions
+        document.getElementById('editUserForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editUserId').value;
+            const data = {
+                fullName: document.getElementById('editUserFullName').value,
+                role: document.getElementById('editUserRole').value,
+                active: document.getElementById('editUserActive').value
+            };
+            
+            try {
+                const response = await fetch('/api/admin/users/' + id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('User updated successfully!');
+                    closeEditModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Failed to update user. Please try again.');
+            }
+        });
+
+        document.getElementById('editContentForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('editContentId').value;
+            const data = {
+                title: document.getElementById('editContentTitle').value,
+                type: document.getElementById('editContentType').value,
+                category: document.getElementById('editContentCategory').value
+            };
+            
+            try {
+                const response = await fetch('/api/admin/content/' + id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Content updated successfully!');
+                    closeContentModal();
+                    location.reload();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Failed to update content. Please try again.');
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeEditModal();
+                closeContentModal();
+                closeAddUserModal();
+                closeAddContentModal();
+            }
+        });
+    </script>
+
+</body>
+</html>

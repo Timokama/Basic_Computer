@@ -1,0 +1,2 @@
+REM This folder should contain the PostgreSQL JDBC driver (postgresql-42.7.8.jar)
+REM Download from: https://jdbc.postgresql.org/download/postgresql-42.7.8.jar

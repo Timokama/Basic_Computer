@@ -1,0 +1,61 @@
+/* Basic Computer - Register Page Styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.register-container {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    padding: 50px;
+    width: 100%;
+    max-width: 500px;
+}
+.logo { text-align: center; margin-bottom: 30px; }
+.logo h1 { color: #667eea; font-size: 32px; margin-bottom: 10px; }
+.logo p { color: #666; }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; margin-bottom: 8px; color: #555; font-weight: 500; font-size: 14px; }
+.form-group input { width: 100%; padding: 14px; border: 2px solid #e0e0e0; border-radius: 10px; font-size: 15px; transition: border-color 0.3s; }
+.form-group input:focus { outline: none; border-color: #667eea; }
+.btn-register {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.3s;
+    margin-top: 10px;
+}
+.btn-register:hover { transform: translateY(-2px); }
+.link-text { text-align: center; margin-top: 25px; color: #666; font-size: 14px; }
+.link-text a { color: #667eea; text-decoration: none; font-weight: 600; }
+.link-text a:hover { text-decoration: underline; }
+.error-box {
+    background: #fee;
+    color: #c00;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    border: 1px solid #fcc;
+}
+.admin-key-note {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    color: #f59e0b;
+    padding: 10px 15px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}

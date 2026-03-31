@@ -47,9 +47,10 @@
         
         <div class="content-layout">
             <!-- Sidebar - Category Filter -->
-            <aside class="category-sidebar">
+            <aside class="category-sidebar" id="categorySidebar">
                 <div class="sidebar-header">
                     <h3>📂 Categories</h3>
+                    <button class="sidebar-close" onclick="document.getElementById('categorySidebar').classList.remove('open')">&times;</button>
                 </div>
                 <div class="category-list">
                     <a href="/content?type=CONTENT_TYPE" class="category-item CAT_ALL">
@@ -142,6 +143,9 @@
             
             <!-- Main Content Area -->
             <main class="content-main">
+                <!-- Mobile Sidebar Toggle -->
+                <button class="sidebar-toggle" onclick="document.getElementById('categorySidebar').classList.toggle('open')">📂 Categories</button>
+                
                 <!-- Search -->
                 <form method="get" action="/content" class="search-container">
                     <input type="hidden" name="category" value="SEARCH_CAT">
@@ -160,6 +164,8 @@
                 <div class="type-tabs">
                     <a href="/content?category=SEARCH_CAT" class="type-tab TAB_ALL">📚 All</a>
                     <a href="/content?type=NOTE&category=SEARCH_CAT" class="type-tab TAB_NOTES">📝 Notes</a>
+                    <a href="/content?type=EXAMPLE&category=SEARCH_CAT" class="type-tab TAB_EXAMPLES">💡 Examples</a>
+                    <a href="/content?type=PRACTICAL&category=SEARCH_CAT" class="type-tab TAB_PRACTICALS">🔬 Practicals</a>
                     <a href="/content?type=SAMPLE_QUESTION&category=SEARCH_CAT" class="type-tab TAB_QUESTIONS">❓ Questions</a>
                     <a href="/content?type=EXAM&category=SEARCH_CAT" class="type-tab TAB_EXAMS">📋 Exams</a>
                     <a href="/content?type=VIDEO&category=SEARCH_CAT" class="type-tab TAB_VIDEOS">🎥 Videos</a>
@@ -182,7 +188,7 @@
     
     <!-- Footer -->
     <footer>
-        <p>© 2024 Basic Computer - Your Learning Platform</p>
+        <p>© 2026 Basic Computer - Your Learning Platform</p>
     </footer>
 </body>
 </html>

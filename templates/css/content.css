@@ -72,6 +72,41 @@
     color: rgba(255,255,255,0.9);
 }
 
+.sidebar-close {
+    display: none;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0 5px;
+}
+
+.sidebar-close:hover {
+    color: #fff;
+}
+
+.sidebar-toggle {
+    display: none;
+    width: 100%;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: all 0.3s;
+    font-family: 'Outfit', sans-serif;
+}
+
+.sidebar-toggle:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
 .category-list {
     display: flex;
     flex-direction: column;
@@ -385,6 +420,16 @@
     box-shadow: 0 4px 12px rgba(250,112,154,0.4);
 }
 
+.material-icon.example {
+    background: linear-gradient(135deg, #a8edea, #fed6e3);
+    box-shadow: 0 4px 12px rgba(168,237,234,0.4);
+}
+
+.material-icon.practical {
+    background: linear-gradient(135deg, #f6d365, #fda085);
+    box-shadow: 0 4px 12px rgba(246,211,101,0.4);
+}
+
 .material-title {
     font-size: 1.05rem;
     font-weight: 600;
@@ -400,8 +445,47 @@
     border-radius: 16px;
     font-size: 0.7rem;
     color: rgba(255,255,255,0.55);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     font-weight: 500;
+}
+
+.material-type-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 16px;
+    font-size: 0.68rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.material-type-badge.notes {
+    background: rgba(102,126,234,0.2);
+    color: #a5b4fc;
+}
+
+.material-type-badge.video {
+    background: rgba(240,147,251,0.2);
+    color: #f0abfc;
+}
+
+.material-type-badge.exam {
+    background: rgba(79,172,254,0.2);
+    color: #7dd3fc;
+}
+
+.material-type-badge.question {
+    background: rgba(250,112,154,0.2);
+    color: #fda4af;
+}
+
+.material-type-badge.example {
+    background: rgba(168,237,234,0.2);
+    color: #a5f3fc;
+}
+
+.material-type-badge.practical {
+    background: rgba(246,211,101,0.2);
+    color: #fde68a;
 }
 
 .material-desc {
@@ -529,24 +613,47 @@ footer p {
         grid-template-columns: 1fr;
     }
     
+    .sidebar-toggle {
+        display: block;
+    }
+    
+    .sidebar-close {
+        display: block;
+    }
+    
     .category-sidebar {
-        position: static;
-        max-height: none;
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        height: 100%;
+        max-height: 100vh;
+        z-index: 200;
+        border-radius: 0 20px 20px 0;
+        background: rgba(10,10,15,0.98);
+        border-right: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 10px 0 40px rgba(0,0,0,0.5);
+        padding-top: 20px;
+    }
+    
+    .category-sidebar.open {
+        display: block;
     }
     
     .category-list {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-        gap: 6px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
     }
     
     .category-group {
-        margin-top: 0;
+        margin-top: 12px;
     }
     
     .category-group-label {
-        grid-column: 1 / -1;
-        margin-top: 10px;
+        grid-column: auto;
+        margin-top: 0;
     }
     
     .content-page {

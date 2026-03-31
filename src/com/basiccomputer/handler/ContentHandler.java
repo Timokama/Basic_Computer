@@ -38,7 +38,7 @@ public class ContentHandler implements HttpHandler {
         List<Map<String, Object>> contentList = new ArrayList<>();
         int totalItems = 0;
         try {
-            totalItems = Database.getContentCount(type, search);
+            totalItems = Database.getContentCountWithFilters(type, category, search);
             int offset = (currentPage - 1) * itemsPerPage;
             contentList = Database.getAllContentPaginated(type, category, search, itemsPerPage, offset);
         } catch (Exception e) {
@@ -85,7 +85,7 @@ public class ContentHandler implements HttpHandler {
         html = html.replace("CONTENT_VIEWS", String.valueOf(new Random().nextInt(500) + 50));
         html = html.replace("CONTENT_RATING", String.valueOf(new Random().nextInt(3) + 3));
         html = html.replace("CONTENT_DESCRIPTION", (String) content.get("description"));
-        html = html.replace("CONTENT_BODY", body);
+        html = html.replace("CONTENT_BODY", convertContentToHtml(body));
         html = html.replace("CONCEPT_TAGS", getConceptTags(body));
         
         exchange.getResponseHeaders().set("Content-Type", "text/html; charset=UTF-8");
@@ -111,6 +111,111 @@ public class ContentHandler implements HttpHandler {
             sb.append("<span class=\"concept-tag\">").append(concept).append("</span>");
         }
         return sb.toString();
+    }
+    
+    private String convertContentToHtml(String body) {
+        if (body == null || body.isEmpty()) return "";
+        
+        StringBuilder result = new StringBuilder();
+        String[] lines = body.split("\\\\n|\\n");
+        boolean inTable = false;
+        boolean firstDataRow = false;
+        List<String[]> tableRows = new ArrayList<>();
+        
+        for (int i = 0; i < lines.length; i++) {
+            String line = lines[i].trim();
+            
+            // Detect table separator line: +----+----+
+            if (line.matches("^\\+[=+-]+\\+$")) {
+                if (!inTable) {
+                    inTable = true;
+                    firstDataRow = true;
+                    tableRows.clear();
+                }
+                continue;
+            }
+            
+            // Detect table data row: | col1 | col2 |
+            if (inTable && line.startsWith("|") && line.endsWith("|")) {
+                String[] cells = line.substring(1, line.length() - 1).split("\\|");
+                for (int c = 0; c < cells.length; c++) {
+                    cells[c] = cells[c].trim();
+                }
+                tableRows.add(cells);
+                continue;
+            }
+            
+            // End of table - render it
+            if (inTable && (!line.startsWith("|") || !line.endsWith("|")) && !line.matches("^\\+[=+-]+\\+$")) {
+                inTable = false;
+                result.append(buildHtmlTable(tableRows, firstDataRow));
+                tableRows.clear();
+                firstDataRow = false;
+            }
+            
+            // Regular text line
+            if (!inTable) {
+                if (line.isEmpty()) {
+                    result.append("<br>");
+                } else if (line.startsWith("Objective:") || line.startsWith("Steps:") || 
+                           line.startsWith("Deliverable:") || line.startsWith("Formulas:") ||
+                           line.startsWith("Conditional Formatting:") || line.startsWith("Result:") ||
+                           line.startsWith("Input ")) {
+                    result.append("<div class=\"content-step\">").append(escapeHtml(line)).append("</div>");
+                } else if (line.endsWith(":") && line.length() < 60) {
+                    result.append("<div class=\"content-heading\">").append(escapeHtml(line)).append("</div>");
+                } else {
+                    result.append("<p>").append(escapeHtml(line)).append("</p>");
+                }
+            }
+        }
+        
+        // Handle table at end of content
+        if (inTable && !tableRows.isEmpty()) {
+            result.append(buildHtmlTable(tableRows, firstDataRow));
+        }
+        
+        return result.toString();
+    }
+    
+    private String buildHtmlTable(List<String[]> rows, boolean firstRowIsHeader) {
+        if (rows.isEmpty()) return "";
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("<div class=\"table-container\"><table class=\"content-table\">");
+        
+        for (int i = 0; i < rows.size(); i++) {
+            String[] cells = rows.get(i);
+            boolean isHeader = firstRowIsHeader && i == 0;
+            
+            // Check if this row looks like a separator with dashes (skip it)
+            boolean isDashRow = true;
+            for (String cell : cells) {
+                if (!cell.matches("^[-]*$") && !cell.isEmpty()) {
+                    isDashRow = false;
+                    break;
+                }
+            }
+            if (isDashRow) continue;
+            
+            sb.append("<tr>");
+            for (String cell : cells) {
+                if (isHeader) {
+                    sb.append("<th>").append(escapeHtml(cell)).append("</th>");
+                } else {
+                    sb.append("<td>").append(escapeHtml(cell)).append("</td>");
+                }
+            }
+            sb.append("</tr>");
+        }
+        
+        sb.append("</table></div>");
+        return sb.toString();
+    }
+    
+    private String escapeHtml(String text) {
+        if (text == null) return "";
+        return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;").replace("\"", "&quot;");
     }
     
     private String buildContentPage(String contentHtml, String type, String category, String search, int currentPage, int totalPages, int totalItems) {
@@ -165,6 +270,8 @@ public class ContentHandler implements HttpHandler {
         // Type tab active states
         html = html.replace("TAB_ALL", type == null ? "active" : "");
         html = html.replace("TAB_NOTES", "NOTE".equals(type) ? "active" : "");
+        html = html.replace("TAB_EXAMPLES", "EXAMPLE".equals(type) ? "active" : "");
+        html = html.replace("TAB_PRACTICALS", "PRACTICAL".equals(type) ? "active" : "");
         html = html.replace("TAB_VIDEOS", "VIDEO".equals(type) ? "active" : "");
         html = html.replace("TAB_EXAMS", "EXAM".equals(type) ? "active" : "");
         html = html.replace("TAB_QUESTIONS", "SAMPLE_QUESTION".equals(type) ? "active" : "");
@@ -298,14 +405,15 @@ public class ContentHandler implements HttpHandler {
             String contentType = (String) content.get("type");
             String iconClass = getIconClass(contentType);
             String icon = getIconForType(contentType);
+            String typeLabel = getTypeLabel(contentType);
             
             sb.append("<div class='material-card' onclick=\"window.location.href='/content?id=" + content.get("id") + "'\">");
             sb.append("<div class='material-icon " + iconClass + "'>" + icon + "</div>");
+            sb.append("<span class='material-type-badge " + iconClass + "'>" + icon + " " + typeLabel + "</span>");
             sb.append("<span class='material-category'>" + formatCategory((String) content.get("category")) + "</span>");
             sb.append("<h3 class='material-title'>" + content.get("title") + "</h3>");
             sb.append("<p class='material-desc'>" + content.get("description") + "</p>");
             sb.append("<div class='material-meta'>");
-            sb.append("<span>👁️ " + (new Random().nextInt(500) + 50) + " views</span>");
             sb.append("<span class='view-btn'>View →</span>");
             sb.append("</div>");
             sb.append("</div>");
@@ -346,6 +454,8 @@ public class ContentHandler implements HttpHandler {
             case "VIDEO": return "video";
             case "EXAM": return "exam";
             case "SAMPLE_QUESTION": return "question";
+            case "EXAMPLE": return "example";
+            case "PRACTICAL": return "practical";
             default: return "notes";
         }
     }
@@ -356,6 +466,8 @@ public class ContentHandler implements HttpHandler {
             case "VIDEO": return "🎥";
             case "EXAM": return "📋";
             case "SAMPLE_QUESTION": return "❓";
+            case "EXAMPLE": return "💡";
+            case "PRACTICAL": return "🔬";
             default: return "📚";
         }
     }
@@ -366,6 +478,8 @@ public class ContentHandler implements HttpHandler {
             case "VIDEO": return "Video";
             case "EXAM": return "Exam";
             case "SAMPLE_QUESTION": return "Question";
+            case "EXAMPLE": return "Example";
+            case "PRACTICAL": return "Practical";
             default: return "Content";
         }
     }

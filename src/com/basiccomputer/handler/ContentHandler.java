@@ -282,19 +282,19 @@ public class ContentHandler implements HttpHandler {
         // Results count
         html = html.replace("RESULTS_COUNT_HTML", buildResultsCount(totalItems, type, category, currentPage, totalPages));
         
-        // Content grid
-        if (!contentHtml.isEmpty()) {
-            html = html.replace("CONTENT_HTML", contentHtml);
-            html = html.replace("NO_CONTENT_HTML", "");
-        } else {
-            html = html.replace("CONTENT_HTML", "");
-            html = html.replace("NO_CONTENT_HTML", 
-                "<div class=\"no-content\">\n" +
+        // Content grid - replace NO_CONTENT_HTML first since it contains CONTENT_HTML as substring
+        String noContentHtml = "<div class=\"no-content\">\n" +
                 "    <div class=\"no-content-icon\">📚</div>\n" +
                 "    <h2>No materials found</h2>\n" +
                 "    <p>Try adjusting your filters or search terms</p>\n" +
                 "    <a href=\"/content\" class=\"view-btn\">View All Content</a>\n" +
-                "</div>");
+                "</div>";
+        if (!contentHtml.isEmpty()) {
+            html = html.replace("NO_CONTENT_HTML", "");
+            html = html.replace("CONTENT_HTML", contentHtml);
+        } else {
+            html = html.replace("NO_CONTENT_HTML", noContentHtml);
+            html = html.replace("CONTENT_HTML", "");
         }
         
         // Pagination

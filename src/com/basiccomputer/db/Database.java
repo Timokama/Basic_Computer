@@ -34,11 +34,16 @@ public class Database {
     }
     
     public static void deduplicateContent() throws SQLException {
-        String sql = "DELETE FROM content a USING content b WHERE a.id < b.id AND a.title = b.title AND a.type = b.type AND a.category = b.category";
+        int totalDeleted = 0;
         try (Statement stmt = connection.createStatement()) {
-            int deleted = stmt.executeUpdate(sql);
-            if (deleted > 0) {
-                System.out.println("Removed " + deleted + " duplicate content entries");
+            // Remove exact duplicates (same title, type, category)
+            int deleted = stmt.executeUpdate("DELETE FROM content a USING content b WHERE a.id < b.id AND a.title = b.title AND a.type = b.type AND a.category = b.category");
+            totalDeleted += deleted;
+            // Remove same title+type across different categories (visual duplicates)
+            deleted = stmt.executeUpdate("DELETE FROM content a USING content b WHERE a.id > b.id AND a.title = b.title AND a.type = b.type");
+            totalDeleted += deleted;
+            if (totalDeleted > 0) {
+                System.out.println("Removed " + totalDeleted + " duplicate content entries");
             }
         }
     }
@@ -559,8 +564,9 @@ public class Database {
         // Clean up any existing duplicates first
         try (Statement stmt = connection.createStatement()) {
             stmt.execute("DELETE FROM content a USING content b WHERE a.id < b.id AND a.title = b.title AND a.type = b.type AND a.category = b.category");
+            stmt.execute("DELETE FROM content a USING content b WHERE a.id > b.id AND a.title = b.title AND a.type = b.type");
         }
-        
+
         // Check if content already exists
         String checkSql = "SELECT COUNT(*) FROM content";
         try (Statement stmt = connection.createStatement();
@@ -841,7 +847,7 @@ public class Database {
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('Stack vs Queue', 'LIFO vs FIFO', 'SAMPLE_QUESTION', 'Stack: Last In First Out (LIFO), like a stack of plates. Operations: push, pop. Queue: First In First Out (FIFO), like a line. Operations: enqueue, dequeue.', 'DATA_STRUCTURES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('Binary Search Tree operations', 'BST insert, delete, search', 'SAMPLE_QUESTION', 'BST: left subtree < root < right subtree. Search: O(log n) average. Insert: follow BST property. Delete: three cases (leaf, one child, two children).', 'DATA_STRUCTURES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('Hash table collisions', 'Handling hash collisions', 'SAMPLE_QUESTION', 'Collision when two keys hash to same index. Solutions: Chaining (linked list at each bucket), Open Addressing (probe sequence: linear, quadratic, double hashing).', 'DATA_STRUCTURES', 1)",
-            "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('What is a heap?', 'Heap data structure', 'NOTE', 'Heap is a complete binary tree with heap property. Max-Heap: parent >= children. Min-Heap: parent <= children. Used for priority queues and heap sort.', 'DATA_STRUCTURES', 1)",
+            "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('What is a heap?', 'Heap data structure', 'SAMPLE_QUESTION', 'Heap is a complete binary tree with heap property. Max-Heap: parent >= children. Min-Heap: parent <= children. Used for priority queues and heap sort.', 'DATA_STRUCTURES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('DFS vs BFS', 'Graph traversal comparison', 'SAMPLE_QUESTION', 'DFS: goes deep first (stack/recursion), good for path finding. BFS: goes wide first (queue), finds shortest path in unweighted graphs.', 'DATA_STRUCTURES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('Tree traversal methods', 'Inorder, preorder, postorder', 'SAMPLE_QUESTION', 'Inorder: left-root-right (sorted BST). Preorder: root-left-right (copy tree). Postorder: left-right-root (delete tree).', 'DATA_STRUCTURES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('What is a graph?', 'Graph data structure', 'SAMPLE_QUESTION', 'Graph: set of vertices (nodes) connected by edges. Types: directed/undirected, weighted/unweighted, cyclic/acyclic.', 'DATA_STRUCTURES', 1)",
@@ -867,7 +873,7 @@ public class Database {
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('ACID properties', 'Transaction properties', 'SAMPLE_QUESTION', 'ACID: Atomicity (all or nothing), Consistency (valid state), Isolation (concurrent transactions), Durability (committed data persists).', 'DATABASES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('What is an index?', 'Database optimization', 'SAMPLE_QUESTION', 'Index is a data structure that speeds up data retrieval. B-Tree most common. Pros: faster reads. Cons: slower writes, more storage.', 'DATABASES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('SQL GROUP BY', 'Grouping data', 'SAMPLE_QUESTION', 'GROUP BY groups rows with same values. Used with aggregate functions (COUNT, SUM, AVG). HAVING filters groups (WHERE filters rows).', 'DATABASES', 1)",
-            "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('Denormalization', 'Database optimization', 'SAMPLE_QUERY', 'Denormalization adds redundant data to improve read performance. Opposite of normalization. Used in read-heavy systems.', 'DATABASES', 1)",
+            "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('Denormalization', 'Database optimization', 'SAMPLE_QUESTION', 'Denormalization adds redundant data to improve read performance. Opposite of normalization. Used in read-heavy systems.', 'DATABASES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('SQL Injection', 'Security vulnerability', 'SAMPLE_QUESTION', 'SQL injection attacks insert malicious SQL code through user input. Prevention: parameterized queries, input validation, least privilege.', 'DATABASES', 1)",
             "INSERT INTO content (title, description, type, body, category, created_by) VALUES ('Database views', 'Virtual tables', 'SAMPLE_QUESTION', 'View is a virtual table based on query result. Does not store data. Used for security (hide columns), simplify complex queries.', 'DATABASES', 1)",
             
